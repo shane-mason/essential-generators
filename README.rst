@@ -1,16 +1,24 @@
-# Essential Document Generator
+Essential Document Generator
+=============================
 
-# Dead Simple Document Generation
+Dead Simple Document Generation
+-------------------------------
 
 Whether it's testing database performance or a new web interface, we've all needed a dead simple 
 solution that'a flexible enough to generate a complex data set. If this is one of those times, 
 you've come to the right place.
 
-## Install
+Install
+~~~~~~~~
+
+Using pip::
 
     pip install essential_docgen
     
-## Use case: Get some random values
+
+Use case: Get some random values
+---------------------------------
+Simple interface::
 
     >>> from essential_docgen import DocumentGenerator
     
@@ -41,10 +49,11 @@ you've come to the right place.
     hiano needmi. Chtoetete isdorokeou urtieconu allere ashaou 
     bel netthtooen ohaaktnatu erteaaero nguiaes eeso aall.'
         
-## Use case: Make lots of complex documents
+Use case: Make lots of complex documents
+----------------------------------------
 
 Let's say we are building a database for a new social media site. We have a preliminary schema and
-want to test the server with some examples like this:
+want to test the server with some examples like this::
 
 
     {
@@ -57,10 +66,11 @@ want to test the server with some examples like this:
         about: Some longer profile text. Several Sentences.        
     }
 
-### Document Templates
+Document Templates
+~~~~~~~~~~~~~~~~~~
 
 Now let's say we want to generate hundreds of thousands of these records. For making documents, 
-we first need to define the template. 
+we first need to define the template::
 
        gen = DocumentGenerator()
 
@@ -81,11 +91,12 @@ The template gives the structure and type for each field in the document. Note t
 a list and not a single type; when a list is provided as the type, one of the items in the list 
 will be randomly selected for each generated documents using `random.choice(list)`
 
-### Custom Fields
+Custom Fields
+~~~~~~~~~~~~~
 
 Now we want to implement a new feature where users can rate each other between 1-5 stars and we want
 to keep track of the average rating (a float between 1 and 5). We can do this by passing in a 
-function as the type, like so:
+function as the type, like so::
 
     def gen_rating():
         return random.uniform(1, 5)
@@ -105,11 +116,12 @@ function as the type, like so:
 In this case, when each document is created, `gen_rating` is called and the returned value is 
 added to the document.
 
-### Nested Documents
+Nested Documents
+~~~~~~~~~~~~~~~~
 
 Now that users are rating each other, of course they'll want to get in contact with each other. 
 The schema gets extended to include a nested `contact` object. Just like any custom field, we can 
-generate nested documents using generator functions as the type.
+generate nested documents using generator functions as the type::
 
     def gen_contact():
         return {
@@ -129,11 +141,12 @@ generate nested documents using generator functions as the type.
     }
 
 
-### Word & Sentence Caching
+Word & Sentence Caching
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Creating word and sentence cache's serves two purposes: it resticts the possible space of generated
 elements to a discreet size (for instance, the average American's vocabulary is between 5k and 10k
-words) and it greatly speeds subsequent document generation. Use them like this:
+words) and it greatly speeds subsequent document generation. Use them like this::
 
     gen.init_word_cache(5000)
     gen.init_word_cache(5000)
@@ -144,7 +157,8 @@ will be selected from the caches. If you want to generate a new to a word or sen
 cache, call `gen.gen_word()` and `gen.gen_sentence()` respectively. If you want finer grain control,
 `gen.word_cache` and `gen.sentence_cache` are arrays of strings that can be directly manipulated.
 
-### Finer Grained Control
+Finer Grained Control
+~~~~~~~~~~~~~~~~~~~~~
 
 Now we want the user to be able to set a link to their current favorite post. You could do this
 by adding a field called 'favpost' and settings its type to 'slug' (like the ones used to url-encode
@@ -153,7 +167,7 @@ unique favpost for each document, but in the real world there would be a finite 
 
 You can control this behaviour by using python lists as the type. In this example, we use a list
 comprehension to generate a list of 1000 slugs that will be randomly seletected from when the documents
-are generated. 
+are generated::
 
     template = {
         'id': 'guid',
@@ -169,9 +183,11 @@ are generated.
 
 
 
-### So, what did we end up with?
 
-This is one result. 
+So, what did we end up with?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is one result::
 
     {
         'name': 'Ster Ev', 
@@ -196,7 +212,8 @@ This is one result.
 Documents are basic Python dictionaries, so you can use the directly in your program or convert 
 them to json or any other serialization format for testing anywhere.
 
-## Disclaimer
+Disclaimer
+-----------
 
 The purpose of this module is to quickly generate data for use cases like load testing and 
 performance evaluations. It attempts to mimic real data, but will not have the frequency or
@@ -208,7 +225,8 @@ found in the english language. Its a start, but beware that there's no sanitatio
 very possible that real words and even phrases are generated - and this could include
 objectionable content.
 
-### Why did I build this?
+Why did I build this?
+-----------------------
 
 There are several great python module out there that generate fake data, so why did I make this?
 Two reasons really:
