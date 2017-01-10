@@ -10,9 +10,9 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 
 setup(
-    name='essential_docgen',
+    name='essential_generators',
     version='0.4',
-    packages=['essential_docgen'],
+    packages=['essential_generators'],
     url='https://github.com/shane-mason/essential-document-generator',
     license='MIT',
     author='scmason',

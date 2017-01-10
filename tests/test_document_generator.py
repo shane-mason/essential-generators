@@ -1,5 +1,5 @@
 import unittest
-from essential_docgen import DocumentGenerator
+from essential_generators import DocumentGenerator
 import random
 
 

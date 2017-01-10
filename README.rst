@@ -13,14 +13,14 @@ Install
 
 Using pip::
 
-    pip install essential_docgen
+    pip install essential_generators
     
 
 Use case: Get some random values
 ---------------------------------
 Simple interface::
 
-    >>> from essential_docgen import DocumentGenerator
+    >>> from essential_generators import DocumentGenerator
     
     >>> gen = DocumentGenerator()
     
