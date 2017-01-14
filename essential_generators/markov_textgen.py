@@ -1,33 +1,5 @@
+from essential_generators import Random36
 import random
-import sys
-import itertools as _itertools
-import bisect as _bisect
-
-class Random36(random.Random):
-    "Show the code included in the Python 3.6 version of the Random class"
-
-
-    def choices(self, population, weights=None, *, cum_weights=None, k=1):
-        """Return a k sized list of population elements chosen with replacement.
-
-        If the relative weights or cumulative weights are not specified,
-        the selections are made with equal probability.
-
-        """
-        random = self.random
-        if cum_weights is None:
-            if weights is None:
-                _int = int
-                total = len(population)
-                return [population[_int(random() * total)] for i in range(k)]
-            cum_weights = list(_itertools.accumulate(weights))
-        elif weights is not None:
-            raise TypeError('Cannot specify both weights and cumulative weights')
-        if len(cum_weights) != len(population):
-            raise ValueError('The number of weights does not match the population')
-        bisect = _bisect.bisect
-        total = cum_weights[-1]
-        return [population[bisect(cum_weights, random() * total)] for i in range(k)]
 
 class MarcovWordGenerator():
     startword = "%"
@@ -38,24 +10,44 @@ class MarcovWordGenerator():
         self.chain = {}
 
 
-    def make_word(self, max_len=15, bigram_start="%"):
-        word = bigram_start
-        current_bigram = bigram_start
-        while len(word) < max_len:
+    def make_text(self, max_len=500, bigram_start=None):
+
+        if bigram_start is not None:
+            text = bigram_start.split()
+        else:
+            text = random.choice(list(self.chain)).split()
+
+        current_bigram = text[0]
+        #print("Here:",current_bigram)
+
+        while len(text) < max_len:
             transition = self._get_weighted_transition(current_bigram)
             if transition != None:
-                word += transition
-                current_bigram = word[-2:]
-            else:
-                break
+                text.append(transition)
+                current_bigram = "%s %s" % (text[-2], text[-1])
+                #print("Current:", current_bigram)
 
-        return word.replace(MarcovWordGenerator.startword, "").replace(MarcovWordGenerator.stopword, "")
+            else:
+
+                text.append("\n")
+                transition = random.choice(list(self.chain))
+                current_bigram = random.choice(list(self.chain))
+                words = current_bigram.split()
+                text+=words
+
+
+
+        return " ".join(text)
 
 
     def _get_weighted_transition(self, bigram):
         if bigram not in self.chain:
             return None
-        res = Random36().choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
+        try:
+            res = Random36().choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
+        except:
+            return None
+
         if len(res) > 0:
             return res[0]
 
@@ -66,16 +58,10 @@ class MarcovWordGenerator():
         bigram_transitions = {}
         for a,b,c in self.grams:
 
-            if a == MarcovWordGenerator.startword:
-                #not really a bigram in this case
-                bigram = "%s" % (a)
-                trans_to = "%s%s" % (b,c)
+            bigram = "%s %s" % (a, b)
+            trans_to = "%s" % (c)
 
-            else:
-                bigram = "%s%s" % (a, b)
-                trans_to = "%s" % (c)
-
-            #print( "%s%s->%s %i" % (a,b,c, self.grams[(a,b,c,)]) )
+            print( "%s %s->%s %i" % (a,b,c, self.grams[(a,b,c,)]) )
 
             if bigram not in bigram_transitions:
                 bigram_transitions[bigram] = {}
@@ -111,27 +97,26 @@ class MarcovWordGenerator():
         n = 3
         self.grams = {}
         gram_buffer = []
+        lines = text.splitlines(keepends=False)
 
-        for letter in text:
-            #letter = letter.lower()
+        for line in lines:
+            words = line.split()
 
-            if letter not in ['\n', ' ']:
-                gram_buffer.append(letter)
-            else:
-                gram_buffer.append(MarcovWordGenerator.stopword)
+            if len(words) == 0:
+                word = "\n"
 
-            if len(gram_buffer) >= n:
-                as_tuple = tuple(gram_buffer)
-                if as_tuple not in self.grams:
-                    self.grams[as_tuple] = 0
-                self.grams[as_tuple] += 1
-                #print(as_tuple)
+            for word in words:
+                #letter = letter.lower()
+                gram_buffer.append(word)
 
-                gram_buffer = gram_buffer[1:]
+                if len(gram_buffer) >= n:
+                    as_tuple = tuple(gram_buffer)
+                    if as_tuple not in self.grams:
+                        self.grams[as_tuple] = 0
+                    self.grams[as_tuple] += 1
 
-            if letter in ['\n', ' ', '*']:
-                gram_buffer.clear()
-                gram_buffer.append(MarcovWordGenerator.startword)
+
+                    gram_buffer = gram_buffer[1:]
 
 
     def train(self, text):
@@ -150,13 +135,27 @@ class MarcovWordGenerator():
 
 
 
-set1 = """Mr. Bennet was so odd a mixture of quick parts, sarcastic humour,
-reserve, and caprice, that the experience of three-and-twenty years had
-been insufficient to make his wife understand his character. _Her_ mind
-was less difficult to develop. She was a woman of mean understanding,
-little information, and uncertain temper. When she was discontented,
-she fancied herself nervous. The business of her life was to get her
-daughters married; its solace was visiting and news."""
+set1 = """“
+
+And yet I meant to be uncommonly clever in taking so decided a dislike
+to him, without any reason. It is such a spur to one’s genius, such an
+opening for wit, to have a dislike of that kind. One may be continually
+abusive without saying anything just; but one cannot always be laughing
+at a man without now and then stumbling on something witty.”
+
+“Lizzy, when you first read that letter, I am sure you could not treat
+the matter as you do now.”
+
+“Indeed, I could not. I was uncomfortable enough, I may say unhappy. And
+with no one to speak to about what I felt, no Jane to comfort me and say
+that I had not been so very weak and vain and nonsensical as I knew I
+had! Oh! how I wanted you!”
+
+“How unfortunate that you should have used such very strong expressions
+in speaking of Wickham to Mr. Darcy, for now they do appear wholly
+undeserved.”
+
+"""
 
 set2 = "Hello world so that I can follow this now."
 
@@ -195,17 +194,19 @@ class Random36(random.Random):
 with open("../corpus.txt", 'r', encoding='utf-8') as fp:
     set4 = fp.read()
 
+
+
 gen = MarcovWordGenerator()
-gen._train_on_text(set4)
+
+gen.train(set4)
 
 
+generated = gen.make_text()
 
-generated = ""
+print("-"*25)
+print(generated.replace("\n", "\n\n"))
 
-for i in range(100):
-    generated += gen.make_word() + " "
 
-print(generated)
 
 gen.saveModel('test.json')
 

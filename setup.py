@@ -17,7 +17,7 @@ setup(
     license='MIT',
     author='scmason',
     author_email='shane.c.mason@gmail.com',
-    description='Generate Python objects based on simple but flexible templates',
+    description='Generate fake data for application testing based on simple but flexible templates.',
     long_description=long_description,
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
