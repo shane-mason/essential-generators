@@ -23,17 +23,7 @@ class DocumentGenerator:
 
     """
 
-    letters = "".join(
-        ['a' * 81, 'b' * 14, 'c' * 27, 'd' * 42, 'e' * 127, 'f' * 22, 'g' * 20, 'h' * 60, 'i' * 69, 'j' * 1, 'k' * 7,
-         'l' * 40, 'm' * 24, 'n' * 67, 'o' * 75, 'p' * 19, 'r' * 59, 's' * 63, 't' * 90, 'u' * 27, 'v' * 9, 'w' * 23,
-         'x', 'y' * 19, 'z'])
-    # word lengths up to 9
-    word_lens = [1]*3 + [2]*18 + [3]*20 + [4]*15 + [5]*10 + [7]*8 + [8]*6 + [9]*4
-    bigrams = ['th'] * 35 + ['he'] * 30 + ['in'] * 24 + ['er'] * 20 + ['an'] * 19 + ['re'] * 18 + ['on'] * 17
-    bigrams += ['at'] * 14 + ['en'] * 14 + ['nd'] * 13 + ['ti'] * 13 + ['es'] * 13 + ['es'] * 12 + ['or'] * 12
-    bigrams += ['te'] * 12 + ['ed'] * 11 + ['is'] * 11 + ['it'] * 11 + ['al'] * 10 + ['ar'] * 10 + ['st'] * 10
-
-    def __init__(self, word_generator=None, text_generator=None):
+    def __init__(self, word_generator=None, text_generator=None, type_map={}):
         self.index = 0
         self.fields = {}
         self.word_cache = []
@@ -48,6 +38,26 @@ class DocumentGenerator:
             self.text_generator = MarcovTextGenerator()
         else:
             self.text_generator = text_generator
+
+        self.type_map = {
+            'index': self.index,
+            'word': self.gen_word,
+            'sentence': self.gen_sentence,
+            'paragraph': self.paragraph,
+            'email': self.email,
+            'guid': self.guid,
+            'url': self.url,
+            'small_int': self.small_int,
+            'integer': self.integer,
+            'small_float': self.small_float,
+            'floating': self.floating,
+            'upc': self.upc,
+            'name': self.name,
+            'slug': self.slug,
+        }
+
+        if type_map is not None:
+            self.type_map.update(type_map)
 
     def init_word_cache(self, length=10000):
         """Create a words cache to speed up generation and to limit the number of possible words."""
@@ -199,31 +209,14 @@ class DocumentGenerator:
     def document(self):
         """Generate a document based on the current template"""
         doc = {}
-        type_map = {
-            'index': self.index,
-            'word': self.gen_word,
-            'sentence': self.gen_sentence,
-            'paragraph': self.paragraph,
-            'email': self.email,
-            'guid': self.guid,
-            'url': self.url,
-            'small_int': self.small_int,
-            'integer': self.integer,
-            'small_float': self.small_float,
-            'floating': self.floating,
-            'upc': self.upc,
-            'name': self.name,
-            'slug': self.slug,
-        }
 
         for field in self.template:
             if isinstance(self.template[field], list):
                 doc[field] = random.choice(self.template[field])
-            elif self.template[field] in type_map:
-                doc[field] = type_map[self.template[field]]()
+            elif self.template[field] in self.type_map:
+                doc[field] = self.type_map[self.template[field]]()
             elif callable(self.template[field]):
                 doc[field] = self.template[field]()
-
             else:
                 doc[field] = self.template[field]
         return doc
