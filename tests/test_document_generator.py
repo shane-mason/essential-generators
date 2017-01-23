@@ -4,6 +4,7 @@ import random
 
 
 class TestDocumentGenerator(unittest.TestCase):
+
     def test_template(self):
         gen = DocumentGenerator()
 

@@ -1,7 +1,7 @@
 import random
 import uuid
 import sys
-
+from essential_generators import MarcovWordGenerator, MarcovTextGenerator, StatisticTextGenerator
 
 class DocumentGenerator:
     """
@@ -33,11 +33,21 @@ class DocumentGenerator:
     bigrams += ['at'] * 14 + ['en'] * 14 + ['nd'] * 13 + ['ti'] * 13 + ['es'] * 13 + ['es'] * 12 + ['or'] * 12
     bigrams += ['te'] * 12 + ['ed'] * 11 + ['is'] * 11 + ['it'] * 11 + ['al'] * 10 + ['ar'] * 10 + ['st'] * 10
 
-    def __init__(self):
+    def __init__(self, word_generator=None, text_generator=None):
         self.index = 0
         self.fields = {}
         self.word_cache = []
         self.sentence_cache = []
+
+        if word_generator is None:
+            self.word_generator = MarcovWordGenerator()
+        else:
+            self.word_generator = word_generator
+
+        if text_generator is None:
+            self.text_generator = MarcovTextGenerator()
+        else:
+            self.text_generator = text_generator
 
     def init_word_cache(self, length=10000):
         """Create a words cache to speed up generation and to limit the number of possible words."""
@@ -64,32 +74,11 @@ class DocumentGenerator:
             return self.gen_sentence()
 
     def gen_word(self):
-        """
-        Generate a new word, based VERY loosely on
-
-            letter frequencies here: https://en.wikipedia.org/wiki/Letter_frequency
-            bigram frequencies here: #http://norvig.com/mayzner.html
-        """
-
-        word = ""
-        word_len = random.choice(DocumentGenerator.word_lens)
-
-        while len(word) < word_len:
-            junction = random.random()
-            if junction < .60:
-                word += random.choice(DocumentGenerator.bigrams)
-            elif junction < .80:
-                word += random.choice(DocumentGenerator.letters) + random.choice(DocumentGenerator.letters)
-            else:
-                word += random.choice(DocumentGenerator.letters)
-
+        word = self.word_generator.gen_word()
         return word
-
     def gen_sentence(self, min_words=3, max_words=15):
         """Generate a new sentence - will use cached words if existing."""
-        sentence = ""
-        for i in range(random.randint(min_words, max_words)):
-            sentence += self.word() + " "
+        sentence = self.text_generator.gen_text(random.randint(min_words, max_words))
         return sentence.strip()
 
     def paragraph(self, min_sentences=2, max_sentences=15):
@@ -224,7 +213,7 @@ class DocumentGenerator:
             'floating': self.floating,
             'upc': self.upc,
             'name': self.name,
-            'slug': self.slug
+            'slug': self.slug,
         }
 
         for field in self.template:
