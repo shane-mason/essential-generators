@@ -8,7 +8,7 @@ class MarcovTextGenerator():
     startword = "STARTWORD"
     stopword = "STOPWORD"
 
-    def __init__(self, model=None):
+    def __init__(self, model=None, load_model=True):
         self.grams = {}
         self.chain = {}
         if model is None:
@@ -16,9 +16,11 @@ class MarcovTextGenerator():
         else:
             model_path = model
 
-        self.load_model(model_path)
+        if load_model:
+            self.load_model(model_path)
 
-    def gen_word(self, max_len=None):
+    def gen_word(self, safe_text=False):
+
         return random.choice(list(self.chain)).split()[0]
 
     def gen_text(self, max_len=500):
@@ -28,10 +30,9 @@ class MarcovTextGenerator():
 
         while len(text) < max_len:
             transition = self._get_weighted_transition(current_bigram)
-            if transition != None:
+            if transition is not None:
                 text.append(transition)
                 current_bigram = "%s %s" % (text[-2], text[-1])
-
             else:
                 current_bigram = random.choice(list(self.chain))
                 words = current_bigram.split()
@@ -126,17 +127,6 @@ class MarcovTextGenerator():
 
     def load_model(self, filepath):
         import json
-        with open(filepath, 'r') as fp:
+        with open(filepath, 'r', encoding='utf-8') as fp:
             self.chain = json.load(fp)
 
-
-def make_training_data(corpus="../tests/corpus.txt", output='markov_textgen.json'):
-    with open(corpus, 'r', encoding='utf-8') as fp:
-        set4 = fp.read()
-
-    gen = MarcovTextGenerator()
-    gen.train(set4)
-    gen.save_model(output)
-
-
-#make_training_data()

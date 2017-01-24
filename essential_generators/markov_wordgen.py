@@ -7,16 +7,17 @@ class MarcovWordGenerator():
     startword = "STARTWORD"
     stopword = "STOPWORD"
 
-    def __init__(self, model=None):
+    def __init__(self, model=None, load_model=True):
         self.grams = {}
         self.chain = {}
+
         if model is None:
             model_path = os.path.join(os.path.dirname(__file__) + '/markov_wordgen.json')
         else:
             model_path = model
 
-        self.load_model(model_path)
-
+        if load_model:
+            self.load_model(model_path)
 
     def gen_word(self, max_len=15):
         word = MarcovWordGenerator.startword
@@ -24,7 +25,7 @@ class MarcovWordGenerator():
         while len(word) < max_len:
             transition = self._get_weighted_transition(current_bigram)
 
-            if transition != None:
+            if transition is not None:
                 word += transition
                 current_bigram = word[-2:]
             else:
@@ -40,7 +41,6 @@ class MarcovWordGenerator():
             words.append(self.gen_word())
 
         return " ".join(words)
-
 
     def _get_weighted_transition(self, bigram):
         if bigram not in self.chain:
@@ -125,23 +125,14 @@ class MarcovWordGenerator():
         self._train_on_text(text)
         self._condition_grams()
 
-    def saveModel(self, filepath):
+    def save_model(self, filepath):
         import json
         with open(filepath, 'w', encoding='utf-8') as fp:
             json.dump(self.chain, fp, ensure_ascii=False)
 
     def load_model(self, filepath):
         import json
-        with open(filepath, 'r') as fp:
+        with open(filepath, 'r', encoding='utf-8') as fp:
             self.chain = json.load(fp)
 
 
-def make_training_data(corpus="../tests/corpus.txt", output="markov_wordgen.json"):
-
-    with open(corpus, 'r', encoding='utf-8') as fp:
-        set4 = fp.read()
-
-    gen = MarcovWordGenerator()
-    gen.train(set4)
-    gen.saveModel(output)
-#make_training_data()

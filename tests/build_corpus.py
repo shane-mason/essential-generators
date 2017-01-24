@@ -2,14 +2,17 @@
 import wikipedia
 import re
 
-subjects = ['New York', 'Seattle', 'Chicago', 'Tampa, Florida', 'Atlanta', 'California',
-             'Pacific Ocean', 'Atlantic Ocean', 'Earth', 'climate', 'weather',
-             'Chemistry', 'Chemical compound', 'molecule', 'scientific method',
+subjects = ['new york', 'seattle', 'chicago', 'tampa, florida', 'atlanta', 'california', 'alaska', 'virginia', 'montana',
+            'germany', 'brazil', 'argentina', 'mexico', 'canada', 'france', 'belgium', 'denmark', 'japan', 'egypt',
+            'bahamas', 'africa', 'asia', 'europe', 'south america', 'desert', 'mountain', 'river', 'lake', 'ocean',
+             'pacific ocean', 'atlantic ocean', 'earth', 'climate', 'weather', 'cloud',
+             'chemistry', 'chemical compound', 'molecule', 'scientific method',
              'computer network', 'logical programming', 'semantics',
-             'physics', 'Particle accelerator', 'social media', 'Journalism',
+             'physics', 'particle accelerator', 'social media', 'journalism', 'lawyer',
              "newspaper", "programming language", "software performance testing", 'federal perkins loan',
             'the arts', "social history", "astronomy", "energy", 'robot', "communication", "information",
-            "medicine", 'health']
+            "medicine", 'health', 'ethics', 'laughter', 'sports', 'casino', 'statue', 'nominative determinism',
+            'fun', 'psychology', 'parrots', 'dogs', 'cats', 'animals', 'traffic', 'hotel', 'hollywood', 'random']
 
 
 
@@ -17,15 +20,16 @@ subjects = ['New York', 'Seattle', 'Chicago', 'Tampa, Florida', 'Atlanta', 'Cali
 corpus = ""
 
 for subject in subjects:
-    page = wikipedia.page(subject)
-    corpus += page.content
-
+    try:
+        page = wikipedia.page(subject)
+        corpus += page.content
+    except:
+        print("Failed on: " + subject)
 
 corpus = re.sub(r'=+ .+ =+', '', corpus)
-corpus = re.sub(r'\n\n+', '\n\n', corpus)
-
+#corpus = re.sub(r'\n\n+', '\n\n', corpus)
 #corpus = re.sub('  +', ' ', corpus)
 #corpus = re.sub('^\s', '--------', corpus, re.MULTILINE)
 
-with open("corp_out.txt", "w", encoding="utf8") as fp:
+with open("corpus.txt", "w", encoding="utf8") as fp:
     fp.write(corpus)
