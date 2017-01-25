@@ -69,9 +69,11 @@ class TestDocumentGenerator(unittest.TestCase):
 
     def test_cache(self):
         gen = DocumentGenerator()
-
+        print("Init word cache")
         gen.init_word_cache(5000)
+        print("init text cache")
         gen.init_sentence_cache(5000)
+        print("done")
 
         self.assertEqual(len(gen.word_cache), 5000)
         self.assertEqual(len(gen.sentence_cache), 5000)

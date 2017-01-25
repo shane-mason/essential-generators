@@ -2,6 +2,7 @@ import random
 import uuid
 import sys
 from essential_generators import MarcovWordGenerator, MarcovTextGenerator, StatisticTextGenerator
+import re
 
 class DocumentGenerator:
     """
@@ -67,14 +68,24 @@ class DocumentGenerator:
     def init_sentence_cache(self, length=10000):
         """Create a words cache to speed up generation and to limit the number of possible words."""
         for i in range(0, length):
+            print(i)
             self.sentence_cache.append(self.gen_sentence())
 
-    def word(self):
+    def word(self, safe_word=False):
         """Gets a word from the words cache or generates a new word if the cache is empty"""
-        if len(self.word_cache) > 0:
-            return random.choice(self.word_cache)
-        else:
-            return self.gen_word()
+        word = None
+
+        while word == None:
+            if len(self.word_cache) > 0:
+                word = random.choice(self.word_cache)
+            else:
+                word = self.gen_word()
+
+            if safe_word and re.search(r'\W', word) is not None:
+                word = None
+
+        return word
+
 
     def sentence(self):
         """Gets a sentence from the word cache or generates a new word if the cache is empty"""
@@ -83,9 +94,11 @@ class DocumentGenerator:
         else:
             return self.gen_sentence()
 
-    def gen_word(self):
+    def gen_word(self, safe_word=True):
         word = self.word_generator.gen_word()
         return word
+
+
     def gen_sentence(self, min_words=3, max_words=15):
         """Generate a new sentence - will use cached words if existing."""
         sentence = self.text_generator.gen_text(random.randint(min_words, max_words))
@@ -109,11 +122,11 @@ class DocumentGenerator:
         junction = random.random()
 
         if junction < .75:
-            domain = "%s.%s" % (self.gen_word(), random.choice(tld))
+            domain = "%s.%s" % (self.word(True), random.choice(tld))
         elif junction < .9:
-            domain = "%s.%s.%s" % (self.gen_word(), self.gen_word(), random.choice(tld))
+            domain = "%s.%s.%s" % (self.word(True), self.word(True), random.choice(tld))
         else:
-            domain = "%s%i.%s" % (self.gen_word(), random.randint(1, 999), random.choice(tld))
+            domain = "%s%i.%s" % (self.word(True), random.randint(1, 999), random.choice(tld))
         return domain
 
     def email(self):
@@ -123,11 +136,11 @@ class DocumentGenerator:
         domain = self.domain()
 
         if junction < .75:
-            email = "%s@%s" % (self.gen_word(), self.domain())
+            email = "%s@%s" % (self.word(True), self.domain())
         elif junction < .9:
-            email = "%s.%s@%s" % (self.gen_word(), self.gen_word(), self.domain())
+            email = "%s.%s@%s" % (self.word(True), self.word(True), self.domain())
         else:
-            email = "%s%i@%s" % (self.gen_word(), random.randint(1, 999), self.domain())
+            email = "%s%i@%s" % (self.word(True), random.randint(1, 999), self.domain())
 
         return email
 
@@ -162,7 +175,7 @@ class DocumentGenerator:
 
         path_depth = random.randint(0, 4)
         for i in range(path_depth):
-            url += "/%s" % self.gen_word()
+            url += "/%s" % self.word(True)
 
         ending = random.random()
         if ending < .30:
@@ -176,7 +189,7 @@ class DocumentGenerator:
         slug = self.word()
         for i in range(random.randint(2, 6)):
             if (random.random() < .8):
-                slug += "-" + self.gen_word()
+                slug += "-" + self.word(True)
             else:
                 slug += str(self.small_int())
         return slug
@@ -204,7 +217,7 @@ class DocumentGenerator:
         return upc
 
     def name(self):
-        return "%s %s" % (self.word().capitalize(), self.word().capitalize())
+        return "%s %s" % (self.word(True).capitalize(), self.word(True).capitalize())
 
     def document(self):
         """Generate a document based on the current template"""
