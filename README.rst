@@ -4,8 +4,8 @@ Essential Document Generator
 Dead Simple Document Generation
 -------------------------------
 
-Whether it's testing database performance or a new web interface, we've all needed a dead simple 
-solution that'a flexible enough to generate a complex data set. If this is one of those times, 
+Whether it's testing database performance or a new web interface, we've all needed a dead simple
+solution that'a flexible enough to generate a complex data set. If this is one of those times,
 you've come to the right place. Essential Generators uses Markov chains to generate 'realistic' data -
 and you can train them on your own data to make it even more real.
 
@@ -15,34 +15,34 @@ Install
 Using pip::
 
     pip install essential_generators
-    
+
 
 Use case: Get some random values
 ---------------------------------
 Simple interface::
 
     >>> from essential_generators import DocumentGenerator
-    
+
     >>> gen = DocumentGenerator()
-    
+
     >>> gen.email()
     'cal.atis@prand.com'
-    
+
     >>> gen.url()
     ''https://ver.co.uk/has/pron/sing/th.ablica-attrob79'
-    
+
     >>> gen.phone()
     '547-922-3848'
-    
+
     >>> gen.slug()
     'ehillote-henaiour-ebemaice-qsiat76-heheellti'
-    
+
     >>> gen.word()
     'choleg'
-    
+
     >>> gen.sentence()
     'Possess something historic and prehistoric sites within the family.'
-    
+
     >>> gen.paragraph()
     "Country's total that roll clouds of gas that can affect. Officers: lieutenant aquifer system under
     the alaska supreme court, 14. About reality. perfect. this means that logic programs combine declarative
@@ -53,7 +53,7 @@ Simple interface::
     seagal's 1994 on deadly ground, starring michael caine.. Lakes and economic assistance (comecon). the states
     and 72 dependent. D.f.: comisión campaign tracking, allowing the companies running these. Were struggling moon
     io is volcanically active, and as the legal basis of chemical complexes.'
-        
+
 Use case: Make lots of complex documents
 ----------------------------------------
 
@@ -68,13 +68,13 @@ want to test the server with some examples like this::
         homepage: johndoe.github.io,
         name: John Doe,
         headline: A Really Cool Guy
-        about: Some longer profile text. Several Sentences.        
+        about: Some longer profile text. Several Sentences.
     }
 
 Document Templates
 ~~~~~~~~~~~~~~~~~~
 
-Now let's say we want to generate hundreds of thousands of these records. For making documents, 
+Now let's say we want to generate hundreds of thousands of these records. For making documents,
 we first need to define the template::
 
        gen = DocumentGenerator()
@@ -93,14 +93,14 @@ we first need to define the template::
         documents = gen.gen_docs(1000)
 
 The template gives the structure and type for each field in the document. Note that `status` has
-a list and not a single type; when a list is provided as the type, one of the items in the list 
+a list and not a single type; when a list is provided as the type, one of the items in the list
 will be randomly selected for each generated documents using `random.choice(list)`
 
 Custom Fields
 ~~~~~~~~~~~~~
 
 Now we want to implement a new feature where users can rate each other between 1-5 stars and we want
-to keep track of the average rating (a float between 1 and 5). We can do this by passing in a 
+to keep track of the average rating (a float between 1 and 5). We can do this by passing in a
 function as the type, like so::
 
     def gen_rating():
@@ -117,15 +117,15 @@ function as the type, like so::
         'rating': gen_rating,
     }
 
- 
-In this case, when each document is created, `gen_rating` is called and the returned value is 
+
+In this case, when each document is created, `gen_rating` is called and the returned value is
 added to the document.
 
 Nested Documents
 ~~~~~~~~~~~~~~~~
 
-Now that users are rating each other, of course they'll want to get in contact with each other. 
-The schema gets extended to include a nested `contact` object. Just like any custom field, we can 
+Now that users are rating each other, of course they'll want to get in contact with each other.
+The schema gets extended to include a nested `contact` object. Just like any custom field, we can
 generate nested documents using generator functions as the type::
 
     def gen_contact():
@@ -156,9 +156,9 @@ words) and it greatly speeds subsequent document generation. Use them like this:
     gen.init_word_cache(5000)
     gen.init_sentence_cache(5000)
 
-In the first line, 5000 words are generated. In the second line, 5000 sentences made up of 5 to 
+In the first line, 5000 words are generated. In the second line, 5000 sentences made up of 5 to
 15 words from the word cache will be generated. subsequent call to `gen.word()` and `gen.sentence()`
-will be selected from the caches. If you want to generate a new to a word or sentence not in the 
+will be selected from the caches. If you want to generate a new to a word or sentence not in the
 cache, call `gen.gen_word()` and `gen.gen_sentence()` respectively. If you want finer grain control,
 `gen.word_cache` and `gen.sentence_cache` are arrays of strings that can be directly manipulated.
 
@@ -167,7 +167,7 @@ Finer Grained Control
 
 Now we want the user to be able to set a link to their current favorite post. You could do this
 by adding a field called 'favpost' and settings its type to 'slug' (like the ones used to url-encode
-blog post ids while keeping them human readable). The problem is, this would likely generate a 
+blog post ids while keeping them human readable). The problem is, this would likely generate a
 unique favpost for each document, but in the real world there would be a finite set of posts.
 
 You can control this behaviour by using python lists as the type. In this example, we use a list
@@ -195,26 +195,26 @@ So, what did we end up with?
 This is one result::
 
     {
-        'name': 'Ster Ev', 
-        'age': 87, 
-        'status': 'anonymous', 
-        'favpost': 'anre-regtehcie57', 
-        'headline': 'ilrendna anr mo inttuonth anuir', 
-        'homepage': 'http://enar692.com/ten/erst/eresnn.heotiatin-neworwnti54-atnd', 
-        'id': 'ced10e96-b02c-4292-9be8-22dd8772c64e', 
-        'rating': 1.9779484996288086, 
+        'name': 'Ster Ev',
+        'age': 87,
+        'status': 'anonymous',
+        'favpost': 'anre-regtehcie57',
+        'headline': 'ilrendna anr mo inttuonth anuir',
+        'homepage': 'http://enar692.com/ten/erst/eresnn.heotiatin-neworwnti54-atnd',
+        'id': 'ced10e96-b02c-4292-9be8-22dd8772c64e',
+        'rating': 1.9779484996288086,
         'contact': {
-                       'email': 'osat@ind.ru', 
+                       'email': 'osat@ind.ru',
                        'phone': '695-323-8276'
                    }
-        'about': 'Yeormftd or an on authar hei po heheat este ler hearain hethe 
-        hetiarte ti oren. Oncs yemf edhe inhe th bain thfin nanfee st. Thheannd 
-        chenes hein thin. Edrdth ttind te uearedor heoea hehaeren seonstth tith 
-        vemoal an rein gel don in. Anao is fecttrr.', 
- 
+        'about': 'Yeormftd or an on authar hei po heheat este ler hearain hethe
+        hetiarte ti oren. Oncs yemf edhe inhe th bain thfin nanfee st. Thheannd
+        chenes hein thin. Edrdth ttind te uearedor heoea hehaeren seonstth tith
+        vemoal an rein gel don in. Anao is fecttrr.',
+
     }
 
-Documents are basic Python dictionaries, so you can use the directly in your program or convert 
+Documents are basic Python dictionaries, so you can use the directly in your program or convert
 them to json or any other serialization format for testing anywhere.
 
 Word and Text Generation
@@ -222,14 +222,19 @@ Word and Text Generation
 
 Essential generators come with 3 builtin word and text generators:
 
-- **MarkovTextGenerator** - this approach uses a Markov chain to generate text. In this case, the generator is trained on text
+**MarkovTextGenerator**
+This approach uses a Markov chain to generate text. In this case, the generator is trained on text
 to generate somewhat realistic random text from real words.
 
-- **MarkovWordGenerator** - this approach uses a Markov chain to generate words. In this case, the generator is trained on text
+**MarkovWordGenerator**
+This approach uses a Markov chain to generate words. In this case, the generator is trained on text
 to generate somewhat realistic random words based on observed words.
 
-- **StatisticTextGenerator** - this approach uses statistical distributions to generate words that are similar to real words.
+**StatisticTextGenerator**
+This approach uses statistical distributions to generate words that are similar to real words.
 
+MarkovTextGenerator
+~~~~~~~~~~~~~~~~~~~~
 **MarkovTextGenerator** generates random text from real words using word level bigram frequency. This is the default for generating
 sentences and paragraphs.
 
@@ -245,6 +250,8 @@ Example Text::
     videos, including physics Video: Physics "Lightning" Tour with Justin Morgan 52-part video course...
 
 
+MarkovWordGenenerator
+~~~~~~~~~~~~~~~~~~~~~~
 **MarkovWordGenenerator** generates random words from real letters using letter level bigram frequency. This is the default for
 generating words (also used for emails, names and domains)
 
@@ -258,6 +265,8 @@ Example Text::
     imps stions revain Goto Stedes remapp go coutle Sountl doingu ablech thed al in whiclu thican Ocepro In havelo var clowne
     the of couthe...
 
+StatisticWordGenerator
+~~~~~~~~~~~~~~~~~~~~~~
 **StatisticWordGenerator** generates random words from statistical distributions observed in a large corpus.
 
 Example Word::
@@ -297,9 +306,9 @@ build_word_model.py - Uses corpus.txt to output markov_wordgen.json as the word 
 Disclaimer
 -----------
 
-The purpose of this module is to quickly generate data for use cases like load testing and 
+The purpose of this module is to quickly generate data for use cases like load testing and
 performance evaluations. It attempts to mimic real data, but will not have the frequency or
-statistical qualities of real world data. There are no warranties and this shouldn't 
+statistical qualities of real world data. There are no warranties and this shouldn't
 be used for scientific, health or industrial purposes and so on...
 
 
