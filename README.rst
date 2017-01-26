@@ -6,7 +6,7 @@ Dead Simple Document Generation
 
 Whether it's testing database performance or a new web interface, we've all needed a dead simple 
 solution that'a flexible enough to generate a complex data set. If this is one of those times, 
-you've come to the right place. Essential Generators uses Marcov chains to generate 'realistic' data -
+you've come to the right place. Essential Generators uses Markov chains to generate 'realistic' data -
 and you can train them on your own data to make it even more real.
 
 Install
