@@ -154,7 +154,7 @@ elements to a discreet size (for instance, the average American's vocabulary is 
 words) and it greatly speeds subsequent document generation. Use them like this::
 
     gen.init_word_cache(5000)
-    gen.init_word_cache(5000)
+    gen.init_sentence_cache(5000)
 
 In the first line, 5000 words are generated. In the second line, 5000 sentences made up of 5 to 
 15 words from the word cache will be generated. subsequent call to `gen.word()` and `gen.sentence()`
@@ -222,11 +222,11 @@ Word and Text Generation
 
 Essential generators come with 3 builtin word and text generators:
 
-#. **MarkovTextGenerator** - this approach uses a Markov chain to generate text. In this case, the generator is trained on text
+- **MarkovTextGenerator** - this approach uses a Markov chain to generate text. In this case, the generator is trained on text
 to generate somewhat realistic random text from real words.
-#. **MarkovWordGenerator** - this approach uses a Markov chain to generate words. In this case, the generator is trained on text
+- **MarkovWordGenerator** - this approach uses a Markov chain to generate words. In this case, the generator is trained on text
 to generate somewhat realistic random words based on observed words.
-#. **StatisticTextGenerator** - this approach uses statistical distributions to generate words that are similar to real words.
+- **StatisticTextGenerator** - this approach uses statistical distributions to generate words that are similar to real words.
 
 **MarkovTextGenerator** generates random text from real words using word level bigram frequency. This is the default for generating
 sentences and paragraphs.
