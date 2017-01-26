@@ -3,7 +3,7 @@ import random
 from essential_generators import Random36
 
 
-class MarcovWordGenerator():
+class MarkovWordGenerator():
     startword = "STARTWORD"
     stopword = "STOPWORD"
 
@@ -20,8 +20,8 @@ class MarcovWordGenerator():
             self.load_model(model_path)
 
     def gen_word(self, max_len=15):
-        word = MarcovWordGenerator.startword
-        current_bigram = MarcovWordGenerator.startword
+        word = MarkovWordGenerator.startword
+        current_bigram = MarkovWordGenerator.startword
         while len(word) < max_len:
             transition = self._get_weighted_transition(current_bigram)
 
@@ -31,7 +31,7 @@ class MarcovWordGenerator():
             else:
                 break
 
-        return word.replace(MarcovWordGenerator.startword, "").replace(MarcovWordGenerator.stopword, "")
+        return word.replace(MarkovWordGenerator.startword, "").replace(MarkovWordGenerator.stopword, "")
 
     def gen_text(self, max_len=500):
 
@@ -45,6 +45,7 @@ class MarcovWordGenerator():
     def _get_weighted_transition(self, bigram):
         if bigram not in self.chain:
             return None
+
         res = Random36().choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
         if len(res) > 0:
             return res[0]
@@ -55,7 +56,7 @@ class MarcovWordGenerator():
         bigram_transitions = {}
         for a, b, c in self.grams:
 
-            if a == MarcovWordGenerator.startword:
+            if a == MarkovWordGenerator.startword:
                 # not really a bigram in this case
                 bigram = "%s" % (a)
                 trans_to = "%s%s" % (b, c)
@@ -106,7 +107,7 @@ class MarcovWordGenerator():
             if letter not in ['\n', ' ']:
                 gram_buffer.append(letter)
             else:
-                gram_buffer.append(MarcovWordGenerator.stopword)
+                gram_buffer.append(MarkovWordGenerator.stopword)
 
             if len(gram_buffer) >= n:
                 as_tuple = tuple(gram_buffer)
@@ -119,7 +120,7 @@ class MarcovWordGenerator():
 
             if letter in ['\n', ' ', '*']:
                 gram_buffer.clear()
-                gram_buffer.append(MarcovWordGenerator.startword)
+                gram_buffer.append(MarkovWordGenerator.startword)
 
     def train(self, text):
         self._train_on_text(text)

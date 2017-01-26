@@ -1,5 +1,5 @@
 #from distutils.core import setup
-from setuptools import setup
+from setuptools import setup, find_packages
 from os import path
 
 here = path.abspath(path.dirname(__file__))
@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='essential_generators',
-    version='0.4',
+    version='0.5',
     packages=['essential_generators'],
     url='https://github.com/shane-mason/essential-document-generator',
     license='MIT',
@@ -19,6 +19,12 @@ setup(
     author_email='shane.c.mason@gmail.com',
     description='Generate fake data for application testing based on simple but flexible templates.',
     long_description=long_description,
+
+    package_data={
+        # If any package contains *.txt or *.rst files, include them:
+        '': ['*.json', '*.txt'],
+
+    },
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers = [

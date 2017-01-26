@@ -1,7 +1,7 @@
 import random
 import uuid
 import sys
-from essential_generators import MarcovWordGenerator, MarcovTextGenerator, StatisticTextGenerator
+from essential_generators import MarkovWordGenerator, MarkovTextGenerator, StatisticTextGenerator
 import re
 
 class DocumentGenerator:
@@ -31,12 +31,12 @@ class DocumentGenerator:
         self.sentence_cache = []
 
         if word_generator is None:
-            self.word_generator = MarcovWordGenerator()
+            self.word_generator = MarkovWordGenerator()
         else:
             self.word_generator = word_generator
 
         if text_generator is None:
-            self.text_generator = MarcovTextGenerator()
+            self.text_generator = MarkovTextGenerator()
         else:
             self.text_generator = text_generator
 
@@ -68,7 +68,7 @@ class DocumentGenerator:
     def init_sentence_cache(self, length=10000):
         """Create a words cache to speed up generation and to limit the number of possible words."""
         for i in range(0, length):
-            print(i)
+            #print(i)
             self.sentence_cache.append(self.gen_sentence())
 
     def word(self, safe_word=False):
@@ -98,11 +98,20 @@ class DocumentGenerator:
         word = self.word_generator.gen_word()
         return word
 
-
     def gen_sentence(self, min_words=3, max_words=15):
         """Generate a new sentence - will use cached words if existing."""
         sentence = self.text_generator.gen_text(random.randint(min_words, max_words))
-        return sentence.strip()
+        sentence = sentence[0].upper() + sentence[1:]
+        sentence = sentence.strip()
+
+        ending = "."
+        if random.random() > .95:
+            ending = '?'
+        elif random.random() > .95:
+            ending = '!'
+
+        sentence = re.sub(r'\W+$', ending, sentence)
+        return sentence
 
     def paragraph(self, min_sentences=2, max_sentences=15):
         """Generate a new paragraph - will use cached sentences if existing."""
@@ -240,3 +249,7 @@ class DocumentGenerator:
         for i in range(count):
             docs.append(self.document())
         return docs
+
+
+
+gen = DocumentGenerator(text_generator=MarkovTextGenerator(), word_generator=MarkovWordGenerator)

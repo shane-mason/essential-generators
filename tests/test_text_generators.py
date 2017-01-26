@@ -1,30 +1,29 @@
 import unittest
-from essential_generators import MarcovTextGenerator, MarcovWordGenerator, StatisticTextGenerator
+from essential_generators import MarkovTextGenerator, MarkovWordGenerator, StatisticTextGenerator
 import random
 
 
 class TestMarkovTextGenerator(unittest.TestCase):
 
     def test_markov_text(self):
-        text = MarcovTextGenerator().gen_text()
+        text = MarkovTextGenerator().gen_text()
         print("-TestMarkovTextGenerator.text"*5)
         print(text)
 
     def test_markov_word(self):
-        text = MarcovTextGenerator().gen_word()
-        print("-TestMarkovTextGenerator.word" * 5)
+        text = MarkovTextGenerator().gen_word()
         print(text)
 
 
 class TestMarkovWordGenerator(unittest.TestCase):
 
     def test_markov_text(self):
-        text = MarcovWordGenerator().gen_text()
+        text = MarkovWordGenerator().gen_text()
         print("-TestMarkovWordGenerator.text" * 5)
         print(text)
 
     def test_markov_word(self):
-        text = MarcovWordGenerator().gen_word()
+        text = MarkovWordGenerator().gen_word()
         print("-TestMarkovWordGenerator.word" * 5)
         print(text)
 

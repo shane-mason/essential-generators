@@ -3,7 +3,7 @@ import random
 import os
 
 
-class MarcovTextGenerator():
+class MarkovTextGenerator():
 
     startword = "STARTWORD"
     stopword = "STOPWORD"
@@ -18,27 +18,30 @@ class MarcovTextGenerator():
 
         if load_model:
             self.load_model(model_path)
+            self.chain_list = list(self.chain)
 
     def gen_word(self, safe_text=False):
 
-        return random.choice(list(self.chain)).split()[0]
+        return random.choice(self.chain_list).split()[0]
 
     def gen_text(self, max_len=500):
-        text = random.choice(list(self.chain)).split()
+        text = random.choice(self.chain_list).split()
 
         current_bigram = text[0]
 
+        text_append = text.append
+        space_join = " ".join
         while len(text) < max_len:
             transition = self._get_weighted_transition(current_bigram)
             if transition is not None:
-                text.append(transition)
-                current_bigram = "%s %s" % (text[-2], text[-1])
+                text_append(transition)
+                current_bigram = space_join([text[-2], text[-1]])
             else:
-                current_bigram = random.choice(list(self.chain))
-                words = current_bigram.split()
-                text += words
+                current_bigram = random.choice(self.chain_list)
+                text += [self.chain[current_bigram]['left'], self.chain[current_bigram]['right']]
 
-        return " ".join(text).replace("<br/>", "\n")
+        response = " ".join(text).replace("<br/>", "\n")
+        return response
 
     def _get_weighted_transition(self, bigram):
         if bigram not in self.chain:
@@ -55,6 +58,7 @@ class MarcovTextGenerator():
 
     def _condition_grams(self):
         bigram_transitions = {}
+
         for a, b, c in self.grams:
 
             bigram = "%s %s" % (a, b)
@@ -72,6 +76,7 @@ class MarcovTextGenerator():
             bigram_transitions[bigram]['total'] += self.grams[(a, b, c,)]
             bigram_transitions[bigram][trans_to] += self.grams[(a, b, c,)]
 
+
         # now, get the percentages for each
         for bigram in bigram_transitions:
             weights = []
@@ -86,6 +91,10 @@ class MarcovTextGenerator():
 
             bigram_transitions[bigram]['weights'] = weights
             bigram_transitions[bigram]['transitions'] = transitions
+            # also, while we are here..
+            words = bigram.split()
+            bigram_transitions[bigram]['left'] = words[0]
+            bigram_transitions[bigram]['right'] = words[1]
 
         self.chain = bigram_transitions
 
@@ -130,3 +139,13 @@ class MarcovTextGenerator():
         with open(filepath, 'r', encoding='utf-8') as fp:
             self.chain = json.load(fp)
 
+def run_it():
+    gen = MarkovTextGenerator()
+    for i in range(500):
+        #print(i)
+        text = gen.gen_text(10)
+
+        #print(text)
+
+if __name__ == '__main__':
+    run_it()

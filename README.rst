@@ -6,7 +6,8 @@ Dead Simple Document Generation
 
 Whether it's testing database performance or a new web interface, we've all needed a dead simple 
 solution that'a flexible enough to generate a complex data set. If this is one of those times, 
-you've come to the right place.
+you've come to the right place. Essential Generators uses Marcov chains to generate 'realistic' data -
+and you can train them on your own data to make it even more real.
 
 Install
 ~~~~~~~~
@@ -25,10 +26,10 @@ Simple interface::
     >>> gen = DocumentGenerator()
     
     >>> gen.email()
-    'andease@tadn.tv'
+    'cal.atis@prand.com'
     
     >>> gen.url()
-    'https://atad.com/enasce.jsp'
+    ''https://ver.co.uk/has/pron/sing/th.ablica-attrob79'
     
     >>> gen.phone()
     '547-922-3848'
@@ -37,17 +38,21 @@ Simple interface::
     'ehillote-henaiour-ebemaice-qsiat76-heheellti'
     
     >>> gen.word()
-    'enhihee'
+    'choleg'
     
     >>> gen.sentence()
-    'hao orecoed menrial reis onheinete anyiicerth loi'
+    'Possess something historic and prehistoric sites within the family.'
     
     >>> gen.paragraph()
-    'Anliofea esrnema keriteceuofci hede urtooou andine thmaoor 
-    haaresipino. Ngli oanndlaer erth qoreeyaomfu hewoleoraoein. 
-    Onma ansieo icorof eteatsihng riemeuri ta iteoftorte onseclohe 
-    hiano needmi. Chtoetete isdorokeou urtieconu allere ashaou 
-    bel netthtooen ohaaktnatu erteaaero nguiaes eeso aall.'
+    "Country's total that roll clouds of gas that can affect. Officers: lieutenant aquifer system under
+    the alaska supreme court, 14. About reality. perfect. this means that logic programs combine declarative
+    and procedural law. some. 20.3% of other nations. during the meiji constitution, and assembled the imperial
+    estates. Reduce visibility work during the regime withdrew from the crow in. Divert recyclable at 100.
+    Applications. because no carbon, then all of which glucose (c6h12o6) and stearin (c57h110o6) are convenient.
+    In french. forms can each be divided into: information theory. Therapeutic orientation. around haines. steven
+    seagal's 1994 on deadly ground, starring michael caine.. Lakes and economic assistance (comecon). the states
+    and 72 dependent. D.f.: comisión campaign tracking, allowing the companies running these. Were struggling moon
+    io is volcanically active, and as the legal basis of chemical complexes.'
         
 Use case: Make lots of complex documents
 ----------------------------------------
@@ -212,6 +217,73 @@ This is one result::
 Documents are basic Python dictionaries, so you can use the directly in your program or convert 
 them to json or any other serialization format for testing anywhere.
 
+Word and Text Generation
+-------------------------
+
+Essential generators come with 3 builtin word and text generators:
+
+1. MarkovTextGenerator - this approach uses a Markov chain to generate text. In this case, the generator is trained on text
+to generate somewhat realistic random text from real words.
+2. MarkovWordGenerator - this approach uses a Markov chain to generate words. In this case, the generator is trained on text
+to generate somewhat realistic random words based on observed words.
+3. StatisticTextGenerator - this approach uses statistical distributions to generate words that are similar to real words.
+
+MarkovTextGen generates random text from real words using word level bigram frequency. This is the default for generating
+sentences and paragraphs.
+
+Example Word:
+    fifteen
+
+Example Text:
+    reports the its citizens holding a tertiary education degree. Although Japan has 19 World Heritage List, fifteen of which
+    track the same species, several intermediate stages occur between sea and to a professional social network analysis,
+    network science, sociology, ethnography, statistics, optimization, and mathematics. The Vega Science Trust – science
+    videos, including physics Video: Physics "Lightning" Tour with Justin Morgan 52-part video course...
+
+
+MarkovWordGen generates random words from real letters using letter level bigram frequency. This is the default for
+generating words (also used for emails, names and domains)
+
+Example Word:
+    groboo
+
+Example Text:
+    Remes way by entrun co. Forche 40-194 quilim The lace colost thigag toures loples opprou Alpite go. of andian It Afte
+    imps stions revain Goto Stedes remapp go coutle Sountl doingu ablech thed al in whiclu thican Ocepro In havelo var clowne
+    the of couthe...
+
+StatisticWordGen generated random words from statistical distributions observed in a large corpus.
+
+Example Word:
+    anamer
+
+Example Text:
+    inhe nobh ner ared hetethes tehelnd tisti isthinthe enin onheanar otes bttusaer sth ensa stonth ndns dhe er enhel cehes
+    voon ra anwm on ies trinthedes heenitesed aloi ot re onthdmed onon ataa nan nated inth
+
+You can select the approach you want when initializing the document generator:
+
+    #use default generators
+    gen = DocumentGenerator()
+    #also default
+    gen = DocumentGenerator(text_generator=MarkovTextGenerator(), word_generator=MarkovWordGenerator())
+    #use MarkovWordGenerator for both
+    gen = DocumentGenerator(text_generator=MarkovWordGenerator())
+    #use StatisticTextGenerator for both
+    gen = DocumentGenerator(text_generator=StatisticTextGenerator(), word_generator=StatisticTextGenerator())
+
+
+Creating New Models
+^^^^^^^^^^^^^^^^^^^^
+
+Essential Generator's ships with text and word models built from a variety of wikipedia articles.
+There are three scripts included to help you generate new models:
+
+build_corpus.py - Retrieves specified articles from wikipedia to use when training the models. Default output is
+'corpus.txt'.
+build_text_model.py - Uses corpus.txt to output markov_textgen.json as the text model for sentences and paragraphs.
+build_word_model.py - Uses corpus.txt to output markov_wordgen.json as the word model (for words, email, domains etc)
+
 Disclaimer
 -----------
 
@@ -220,10 +292,6 @@ performance evaluations. It attempts to mimic real data, but will not have the f
 statistical qualities of real world data. There are no warranties and this shouldn't 
 be used for scientific, health or industrial purposes and so on...
 
-Note that words are randomly generated (very loosely) based on character and bi-gram frequencies
-found in the english language. Its a start, but beware that there's no sanitation, so its entirely 
-very possible that real words and even phrases are generated - and this could include
-objectionable content.
 
 Why did I build this?
 -----------------------
