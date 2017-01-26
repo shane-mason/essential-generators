@@ -224,8 +224,10 @@ Essential generators come with 3 builtin word and text generators:
 
 - **MarkovTextGenerator** - this approach uses a Markov chain to generate text. In this case, the generator is trained on text
 to generate somewhat realistic random text from real words.
+
 - **MarkovWordGenerator** - this approach uses a Markov chain to generate words. In this case, the generator is trained on text
 to generate somewhat realistic random words based on observed words.
+
 - **StatisticTextGenerator** - this approach uses statistical distributions to generate words that are similar to real words.
 
 **MarkovTextGenerator** generates random text from real words using word level bigram frequency. This is the default for generating
