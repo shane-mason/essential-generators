@@ -27,9 +27,6 @@ for subject in subjects:
         print("Failed on: " + subject)
 
 corpus = re.sub(r'=+ .+ =+', '', corpus)
-#corpus = re.sub(r'\n\n+', '\n\n', corpus)
-#corpus = re.sub('  +', ' ', corpus)
-#corpus = re.sub('^\s', '--------', corpus, re.MULTILINE)
 
 with open("corpus.txt", "w", encoding="utf8") as fp:
     fp.write(corpus)

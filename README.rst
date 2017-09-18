@@ -90,7 +90,7 @@ we first need to define the template::
         }
 
         gen.set_template(template)
-        documents = gen.gen_docs(1000)
+        documents = gen.documents(1000)
 
 The template gives the structure and type for each field in the document. Note that `status` has
 a list and not a single type; when a list is provided as the type, one of the items in the list
@@ -161,6 +161,37 @@ In the first line, 5000 words are generated. In the second line, 5000 sentences 
 will be selected from the caches. If you want to generate a new to a word or sentence not in the
 cache, call `gen.gen_word()` and `gen.gen_sentence()` respectively. If you want finer grain control,
 `gen.word_cache` and `gen.sentence_cache` are arrays of strings that can be directly manipulated.
+
+Unique Fields
+~~~~~~~~~~~~~
+In this case, we want to gaurantee that the fields are unique. You can accomplish this by choosing 'guid'
+as the field types, but that isn't good enough if you want the field to still look like an email address or a number. For
+this case, we introduce the unique field
+
+    template = {
+        'id': 'guid',
+        'status': ['online', 'offline', 'dnd', 'anonymous'],
+        'age': 'small_int',
+        'homepage': 'url',
+        'name': 'name',
+        'headline': 'sentence',
+        'about': 'paragraph',
+        'primary_email': {'typemap': 'email', 'unique': True, 'tries': 10}
+    }
+
+In the primary_email field above, we passed a dictionary
+
+    typemap - what field type to generate (in this case 'email')
+    unique - tells the generator that each value should be unique
+    tries - the number of times that gen.email() will be called to try and get a unique entry. If a unique item can not
+    generated in _tries_ iterations, the same number of iterations will be tried by generating a value and then adding
+    1-5 random chars appended. If a unique value still isn't generated, then GUIDs are generated until a unique one is
+    found. If tries is not specified, 10 is the default - which will result in the following:
+
+        10 attempts with 'generator.email()'
+        10 attempts with 'generator.email() + generator.gen_chars()'
+        infinite attempts with generator.guid()
+
 
 Finer Grained Control
 ~~~~~~~~~~~~~~~~~~~~~

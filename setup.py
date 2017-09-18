@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='essential_generators',
-    version='0.6',
+    version='0.7',
     packages=['essential_generators'],
     url='https://github.com/shane-mason/essential-document-generator',
     license='MIT',

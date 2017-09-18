@@ -96,6 +96,7 @@ class TestDocumentGenerator(unittest.TestCase):
             'name': 'name',
             'headline': 'sentence',
             'about': 'paragraph',
+            'email': { 'typemap': 'email', 'unique': True },
             'rating': gen_rating,
             'contact': gen_contact,
             'favpost': [gen.slug() for n in range(1000)]

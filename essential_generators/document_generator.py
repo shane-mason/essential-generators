@@ -3,6 +3,7 @@ import uuid
 import sys
 from essential_generators import MarkovWordGenerator, MarkovTextGenerator, StatisticTextGenerator
 import re
+import string
 
 class DocumentGenerator:
     """
@@ -29,6 +30,8 @@ class DocumentGenerator:
         self.fields = {}
         self.word_cache = []
         self.sentence_cache = []
+        self.unique_cache = {}
+
 
         if word_generator is None:
             self.word_generator = MarkovWordGenerator()
@@ -54,7 +57,8 @@ class DocumentGenerator:
             'floating': self.floating,
             'upc': self.upc,
             'name': self.name,
-            'slug': self.slug,
+            'slug': self.slug
+
         }
 
         if type_map is not None:
@@ -93,6 +97,12 @@ class DocumentGenerator:
             return random.choice(self.sentence_cache)
         else:
             return self.gen_sentence()
+
+
+    def gen_chars(self, min=1, max=5):
+        population = string.printable
+        charlist = [random.choice(population) for i in range(min, max)]
+        return "".join(charlist)
 
     def gen_word(self, safe_word=True):
         word = self.word_generator.gen_word()
@@ -228,6 +238,10 @@ class DocumentGenerator:
     def name(self):
         return "%s %s" % (self.word(True).capitalize(), self.word(True).capitalize())
 
+
+    def _find_unique(self):
+        pass
+
     def document(self):
         """Generate a document based on the current template"""
         doc = {}
@@ -235,6 +249,35 @@ class DocumentGenerator:
         for field in self.template:
             if isinstance(self.template[field], list):
                 doc[field] = random.choice(self.template[field])
+            elif isinstance(self.template[field], dict):
+                if 'unique' in self.template[field]:
+                    if self.template[field]['unique']:
+                        found_unique = False
+                        if field not in self.unique_cache:
+                            self.unique_cache[field] = {}
+
+                        max_tries = 0
+                        if 'tries' in self.template[field]:
+                            max_tries = self.template[field]['tries']
+
+                        tries = 0
+                        while not found_unique:
+                            if tries < max_tries:
+                                val = self.type_map[self.template[field]['typemap']]()
+                            elif tries < max_tries*2:
+                                val = self.type_map[self.template[field]['typemap']]() + self.gen_chars()
+                            else:
+                                val = self.guid()
+
+                            if val not in self.unique_cache[field]:
+                                self.unique_cache[field][val] = True
+                                found_unique = True
+
+                            tries += 1
+
+                    else:
+                        doc[field] = self.type_map[self.template[field]['typemap']]()
+
             elif self.template[field] in self.type_map:
                 doc[field] = self.type_map[self.template[field]]()
             elif callable(self.template[field]):
@@ -248,8 +291,9 @@ class DocumentGenerator:
         docs = []
         for i in range(count):
             docs.append(self.document())
+
         return docs
 
 
 
-gen = DocumentGenerator(text_generator=MarkovTextGenerator(), word_generator=MarkovWordGenerator)
+#gen = DocumentGenerator(text_generator=MarkovTextGenerator(), word_generator=MarkovWordGenerator)
