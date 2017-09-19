@@ -166,7 +166,7 @@ Unique Fields
 ~~~~~~~~~~~~~
 In this case, we want to gaurantee that the fields are unique. You can accomplish this by choosing 'guid'
 as the field types, but that isn't good enough if you want the field to still look like an email address or a number. For
-this case, we introduce the unique field
+this case, we introduce the unique field::
 
     template = {
         'id': 'guid',
@@ -179,18 +179,22 @@ this case, we introduce the unique field
         'primary_email': {'typemap': 'email', 'unique': True, 'tries': 10}
     }
 
-In the primary_email field above, we passed a dictionary
+
+In the primary_email field above, we passed a dictionary with the following pairs::
 
     typemap - what field type to generate (in this case 'email')
     unique - tells the generator that each value should be unique
     tries - the number of times that gen.email() will be called to try and get a unique entry. If a unique item can not
     generated in _tries_ iterations, the same number of iterations will be tried by generating a value and then adding
     1-5 random chars appended. If a unique value still isn't generated, then GUIDs are generated until a unique one is
-    found. If tries is not specified, 10 is the default - which will result in the following:
+    found.
 
-        10 attempts with 'generator.email()'
-        10 attempts with 'generator.email() + generator.gen_chars()'
-        infinite attempts with generator.guid()
+The generator does its honest best to try and honor the type sent, but it prioritizes uniqueness. The default number of
+tries is 10, so from our example above::
+
+    10 attempts with 'generator.email()'
+    10 attempts with 'generator.email() + generator.gen_chars()'
+    infinite attempts with generator.guid()
 
 
 Finer Grained Control
