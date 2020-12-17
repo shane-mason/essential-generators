@@ -117,7 +117,7 @@ class DocumentGenerator:
         ending = "."
         if random.random() > .95:
             ending = '?'
-        elif random.random() > .95:
+        elif random.random() > .98:
             ending = '!'
 
         sentence = re.sub(r'\W+$', ending, sentence)

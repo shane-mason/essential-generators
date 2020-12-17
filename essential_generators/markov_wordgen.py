@@ -1,7 +1,5 @@
 import os
 import random
-from essential_generators import Random36
-
 
 class MarkovWordGenerator():
     startword = "STARTWORD"
@@ -45,8 +43,8 @@ class MarkovWordGenerator():
     def _get_weighted_transition(self, bigram):
         if bigram not in self.chain:
             return None
-
-        res = Random36().choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
+        
+        res = random.choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
         if len(res) > 0:
             return res[0]
 

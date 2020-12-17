@@ -1,4 +1,3 @@
-from essential_generators import Random36
 import random
 import os
 
@@ -47,7 +46,7 @@ class MarkovTextGenerator():
         if bigram not in self.chain:
             return None
         try:
-            res = Random36().choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
+            res = random.choices(self.chain[bigram]['transitions'], weights=self.chain[bigram]['weights'])
         except:
             return None
 
