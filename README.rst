@@ -284,6 +284,11 @@ Example Text::
     network science, sociology, ethnography, statistics, optimization, and mathematics. The Vega Science Trust – science
     videos, including physics Video: Physics "Lightning" Tour with Justin Morgan 52-part video course...
 
+Banning Specific Words
+~~~~~~~~~~~~~~~~~~~~~~
+If you want to ensure that specific words do not appear in your text, you can specify a banned word list when you initialize the generator
+
+
 
 MarkovWordGenenerator
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -333,10 +338,10 @@ Creating New Models
 Essential Generator's ships with text and word models built from a variety of wikipedia articles.
 There are three scripts included to help you generate new models:
 
-build_corpus.py - Retrieves specified articles from wikipedia to use when training the models. Default output is
+- build_corpus.py - Retrieves specified articles from wikipedia to use when training the models. Default output is
 'corpus.txt'.
-build_text_model.py - Uses corpus.txt to output markov_textgen.json as the text model for sentences and paragraphs.
-build_word_model.py - Uses corpus.txt to output markov_wordgen.json as the word model (for words, email, domains etc)
+- build_text_model.py - Uses corpus.txt to output markov_textgen.json as the text model for sentences and paragraphs.
+- build_word_model.py - Uses corpus.txt to output markov_wordgen.json as the word model (for words, email, domains etc)
 
 Disclaimer
 -----------
