@@ -288,7 +288,12 @@ Banning Specific Words
 ~~~~~~~~~~~~~~~~~~~~~~
 If you want to ensure that specific words do not appear in your text, you can specify a banned word list when you initialize the generator
 
+    from essential_generators import DocumentGenerator
+    gen = DocumentGenerator(banned_words=["BAD_WORD", "bad_word"])
+    text = gen.paragraph()
+    print(text)
 
+In this case, any exact match to BAD_WORD or bad_word will be replaced with a different word.
 
 MarkovWordGenenerator
 ~~~~~~~~~~~~~~~~~~~~~~
