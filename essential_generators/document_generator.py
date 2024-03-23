@@ -25,14 +25,14 @@ class DocumentGenerator:
 
     """
 
-    def __init__(self, word_generator=None, text_generator=None, type_map={}):
+    def __init__(self, word_generator=None, text_generator=None, type_map={}, banned_words=[]):
         self.index = 0
         self.fields = {}
         self.word_cache = []
         self.sentence_cache = []
         self.unique_cache = {}
-
-
+        self.banned_words = banned_words
+        
         if word_generator is None:
             self.word_generator = MarkovWordGenerator()
         else:
@@ -110,7 +110,7 @@ class DocumentGenerator:
 
     def gen_sentence(self, min_words=3, max_words=15):
         """Generate a new sentence - will use cached words if existing."""
-        sentence = self.text_generator.gen_text(random.randint(min_words, max_words))
+        sentence = self.text_generator.gen_text(random.randint(min_words, max_words), self.banned_words)
         sentence = sentence[0].upper() + sentence[1:]
         sentence = sentence.strip()
 

@@ -23,7 +23,7 @@ class MarkovTextGenerator():
 
         return random.choice(self.chain_list).split()[0]
 
-    def gen_text(self, max_len=500):
+    def gen_text(self, max_len=500, banned_words=[]):
         text = random.choice(self.chain_list).split()
 
         current_bigram = text[0]
@@ -32,7 +32,7 @@ class MarkovTextGenerator():
         space_join = " ".join
         while len(text) < max_len:
             transition = self._get_weighted_transition(current_bigram)
-            if transition is not None:
+            if transition is not None and transition not in banned_words:
                 text_append(transition)
                 current_bigram = space_join([text[-2], text[-1]])
             else:
